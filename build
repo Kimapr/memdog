@@ -1,2 +1,3 @@
 #!/bin/sh
-$(command -v cc || echo $CC) -fuse-ld=lld src/memdog.c -O2 -o memdog
+$(command -v cc || echo $CC) src/memdog.c -O2 -o memdog
+#$(command -v cc || echo $CC) src/leaker.c -O2 -o leaker

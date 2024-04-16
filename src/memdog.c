@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,7 +20,7 @@ void prealloc() {
 
 int parseFloat(const char* in, double *out) {
 	const char* end = in;
-	double o = strtod(in, &end);
+	double o = strtod(in, (char**)&end);
 	if (*end!='\0')
 		return 1;
 	if (out)
@@ -94,8 +95,7 @@ void killer() {
 				memcpy(buf+nlen, (void*)psuf, sizeof(psuf));
 				int pfd = openat(fd, buf, O_RDONLY);
 				if (pfd == -1) {
-					const char err[] = "error: failed to open oom_score\n";
-					write(STDERR_FILENO,err,sizeof(err)-1);
+					fprintf(stderr,"error: failed to open %s: %s\n", buf, strerror(errno));
 				} else {
 					const int osbuf_size = 256;
 					char osbuf[osbuf_size];
@@ -117,6 +117,7 @@ void killer() {
 						maxscore = oomsc;
 						killee = pid;
 					}
+					close(pfd);
 				}
 			}
 			bpos += d->d_reclen;
@@ -127,6 +128,7 @@ void killer() {
 		write(STDERR_FILENO,err,sizeof(err)-1);
 		abort();
 	}
+	close(fd);
 	kill(killee, SIGKILL);
 	fprintf(stderr,"Killed %lli.\n", (long long)killee);
 }
