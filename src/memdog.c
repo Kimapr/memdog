@@ -189,8 +189,6 @@ int dog(int pin, int port, long long ival, long long tout) {
 		if (selc == 0) {
 			kill(pid,SIGKILL);
 			killer();
-			read(pin,&wpid,sizeof(wpid));
-			continue;
 		}
 		if (!read(pin,&wpid,sizeof(wpid))) {
 			const char err[] = "error: dog fail read waitpid from forker\n";
