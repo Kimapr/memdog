@@ -1,0 +1,2 @@
+#!/bin/sh
+$(command -v cc || echo $CC) -fuse-ld=lld src/memdog.c -O2 -o memdog
